@@ -1,4 +1,7 @@
-import React from 'react';
+import React, {useState} from 'react';
+import { useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
+import { add } from '../features/editList/editList';
 import { makeStyles} from '@mui/styles';
 import Box from '@mui/material/Box';
 import Fab from '@mui/material/Fab';
@@ -45,31 +48,42 @@ function Todolist() {
         textAlign: 'center',
         width: '400',
     }));
+
+    const tasks = useSelector((state)=>state.edit);
+
+    const dispatch = useDispatch();
+
+    const [value, setValue] = useState();
+
+    const onSubmit = (e) => {
+        e.preventDefault();
+        dispatch(
+            add({
+                title: value,
+            })
+        )
+    } 
     return(
         <div className={classes.root}>
             <Box sx={{width: 1000, height: 1000, bgcolor:'#deeaed', p:4}} className={classes.box}>
                 <Typography className={classes.title} variant='h3'>To do list</Typography>
 
                 <Box className={classes.container} sx={{'& > :not(style)': { m: 1 }}}>                
-                    <TextField id="standard-basic" label="Add a new task" variant="outlined"/>
-                    <Fab color="primary" aria-label="add">
-                    <AddIcon />
+                    <TextField id="standard-basic" label="Add a new task" variant="outlined" onChange={(e)=>setValue(e.target.value)}/>
+                    <Fab color="primary" aria-label="add" onClick={onSubmit}>
+                        <AddIcon />
                     </Fab>                                               
                 </Box>
 
                 <Stack spacing={2} alignItems="flex-start" className={classes.items}>
-                <Item>
-                    <Checkbox size='medium'/>
-                    Cumpara cartofi
-                </Item>
-                <Item>
-                    <Checkbox size='medium'/>
-                    Spala vasele
-                </Item>
-                <Item>
-                    <Checkbox size='medium'/>
-                    Pleaca in vacanta
-                </Item>
+                {
+                    tasks.map((task) => (
+                        <Item>
+                            <Checkbox size='medium'/>
+                            {task.title}
+                        </Item>
+                    ))
+                }                
                 </Stack>
             </Box>            
         </div>
