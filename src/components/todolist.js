@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
-import { add } from '../features/editList/editList';
+import { add, complete } from '../features/editList/editList';
 import { makeStyles} from '@mui/styles';
 import Box from '@mui/material/Box';
 import Fab from '@mui/material/Fab';
@@ -11,10 +11,9 @@ import TextField from '@mui/material/TextField';
 import Stack from '@mui/material/Stack';
 import Paper from '@mui/material/Paper';
 import { styled } from '@mui/material/styles';
-import Checkbox from '@mui/material/Checkbox';
 
 
-function Todolist() {
+function Todolist({id, title, completed}) {
     const useStyles = makeStyles((theme) => ({
         box: {
         marginLeft: 'auto',
@@ -60,9 +59,23 @@ function Todolist() {
         dispatch(
             add({
                 title: value,
+            }),
+            complete({
+                id: id,
+                completed: !completed,
+            })
+        )
+    }
+
+    const completeTask = () => {
+        dispatch(
+            complete({
+                id: id, 
+                completed: !completed,
             })
         )
     } 
+
     return(
         <div className={classes.root}>
             <Box sx={{width: 1000, height: 1000, bgcolor:'#deeaed', p:4}} className={classes.box}>
@@ -79,7 +92,7 @@ function Todolist() {
                 {
                     tasks.map((task) => (
                         <Item>
-                            <Checkbox size='medium'/>
+                            <input type="checkbox" checked={completed} onChange={completeTask} />
                             {task.title}
                         </Item>
                     ))
